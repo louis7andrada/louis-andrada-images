@@ -1,6 +1,6 @@
 # kokoro/: the council's downloadable voices (council list #278)
 
-Served to the council page (council.andrada.one) by its Worker at `/kokoro/<file>`, fetched from this folder at one
+Served to the council page (council.andrada.one) by its Worker at `/kokoro/<commit>/<file>`, fetched from this folder at one
 pinned commit, so the page stays same-origin and no reader's text or address goes to Hugging Face or a CDN. A reader's
 browser downloads these only when they press "Download voices", checks each file's SHA-256 against the list pinned in
 the council's reviewed code, and synthesises speech on their own device. Kept here, not in the council repo, so that
@@ -23,6 +23,23 @@ Hugging Face revision: `1939ad2a8e416c0acfeecc08a694d14ef25f2231`. The voices ar
 #7224), bf_emma (Tessera #7223), bm_george (Cairn). `ort-wasm-simd-threaded.jsep.*` is the onnxruntime build that
 kokoro.web.js (which bundles transformers.js 3.5.1) imports; the version string inside the bundle is the one above.
 
-Licenses: Kokoro-82M model and voices, Apache-2.0 (hexgrad; ONNX export by onnx-community); kokoro-js, Apache-2.0
-(LICENSE-kokoro-js); transformers.js, Apache-2.0 (LICENSE-transformers-js); onnxruntime-web, MIT (Microsoft,
-https://github.com/microsoft/onnxruntime/blob/main/LICENSE). The files are unmodified.
+## Licences (council #7324, #7340)
+
+The files are unmodified. Everything a reader downloads, and what is inside it:
+
+| part | where it is | licence | text here |
+|---|---|---|---|
+| Kokoro-82M model and voices (hexgrad; ONNX export by onnx-community) | `model_quantized.onnx`, `voices/*.bin`, `config.json`, `tokenizer*.json` | Apache-2.0 | `LICENSE-kokoro-js` (the same Apache-2.0 text) |
+| kokoro-js 1.2.1 | `kokoro.web.js` | Apache-2.0 | `LICENSE-kokoro-js` |
+| transformers.js 3.5.1 | inside `kokoro.web.js` | Apache-2.0 | `LICENSE-transformers-js` |
+| @huggingface/jinja 0.4.x | inside `kokoro.web.js` | MIT | `LICENSE-huggingface-jinja` (from 0.4.1) |
+| phonemizer 1.2.1 (xenova/phonemizer.js) | inside `kokoro.web.js` | Apache-2.0 (its package) | `LICENSE-phonemizer` |
+| **eSpeak NG**, compiled to WASM with its data (`espeak-ng-data`) | inside phonemizer, so inside `kokoro.web.js` | **GPL-3.0-or-later** | `LICENSE-espeak-ng` |
+| onnxruntime-web 1.22.0-dev.20250409-89f8206ba4 | `ort-wasm-simd-threaded.jsep.mjs`, `.wasm`, and its JS inside `kokoro.web.js` | MIT, with its third-party notices | `LICENSE-onnxruntime`, `ThirdPartyNotices-onnxruntime.txt` (both from onnxruntime's `rel-1.22.0`) |
+
+**eSpeak NG's source.** eSpeak NG is free software under the GNU GPL version 3 or later; its source is
+https://github.com/espeak-ng/espeak-ng. The compiled copy here came from the npm package `phonemizer@1.2.1`, whose repository
+(https://github.com/xenova/phonemizer.js) holds the compiled `espeakng.worker.js` but not the build, and neither names the
+eSpeak NG revision it was built from. That revision is not yet identified; until it is, this is the source we can point to.
+
+Not bundled (checked by name in `kokoro.web.js`): sharp and onnxruntime-node (Node-only dependencies of transformers.js).
